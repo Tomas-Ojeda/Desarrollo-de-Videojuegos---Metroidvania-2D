@@ -1,0 +1,188 @@
+using System.Collections;
+using UnityEngine;
+
+public class ElisaAttack : MonoBehaviour
+{
+    [Header("Referencias")]
+    public Transform attackPoint;
+    public LayerMask enemyLayers;
+
+    [Header("Ataque Normal")]
+    public float attackRange = 0.8f;
+    public float attackDamage = 25f;
+    public float attackCooldown = 0.4f;
+
+    [Header("Power Shot / Estocada Cargada")]
+    public float powerShotDamage = 75f;
+    public float powerShotRange = 1.3f;
+    public float powerShotStaminaCost = 35f;
+    public float maxChargeTime = 1.2f;
+
+    [Header("Ralentización de Carga (Slow Motion)")]
+    [Range(0.1f, 1f)] public float chargeTimeScale = 0.4f;
+
+    [Header("Efecto Embestida (Lunge)")]
+    public float lungeForce = 18f; // Fuerza del impulso tipo disparo
+
+    private float lastAttackTime;
+    private float chargeTimer;
+    private bool isCharging;
+    private ElisaStamina staminaSystem;
+    private Rigidbody2D rb;
+    private Animator anim;
+
+    private void Start()
+    {
+        staminaSystem = GetComponent<ElisaStamina>();
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        // 1. ATAQUE NORMAL (J o Clic Izquierdo)
+        if (Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))
+        {
+            if (Time.time - lastAttackTime > attackCooldown)
+            {
+                NormalAttack();
+            }
+        }
+
+        // 2. INICIAR CARGA DE POWER SHOT (K o Clic Derecho)
+        if (Input.GetKeyDown(KeyCode.K) || Input.GetMouseButtonDown(1))
+        {
+            if (staminaSystem != null && staminaSystem.HasStamina(powerShotStaminaCost))
+            {
+                isCharging = true;
+                chargeTimer = 0f;
+
+                // Ralentizar el juego
+                Time.timeScale = chargeTimeScale;
+                Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+                Debug.Log("Cargando Power Shot...");
+            }
+        }
+
+        // 3. PROCESAR CARGA Y SOLTAR ATAQUE
+        if (isCharging)
+        {
+            if (Input.GetKey(KeyCode.K) || Input.GetMouseButton(1))
+            {
+                chargeTimer += Time.unscaledDeltaTime;
+            }
+
+            if (Input.GetKeyUp(KeyCode.K) || Input.GetMouseButtonUp(1))
+            {
+                // Restaurar velocidad normal ANTES de aplicar la embestida
+                ResetTimeScale();
+
+                if (chargeTimer >= maxChargeTime)
+                {
+                    ExecutePowerShot();
+                }
+                else
+                {
+                    Debug.Log("Ataque cargado cancelado (no cargó suficiente tiempo).");
+                }
+
+                isCharging = false;
+                chargeTimer = 0f;
+            }
+        }
+    }
+
+    private void NormalAttack()
+    {
+        lastAttackTime = Time.time;
+        Debug.Log("¡Ataque Normal!");
+
+        // Disparar animación de ataque
+        if (anim != null)
+        {
+            anim.SetTrigger("meleeAttack");
+        }
+
+        PerformAttack(attackDamage, attackRange);
+    }
+
+    private void ExecutePowerShot()
+    {
+        if (staminaSystem != null && staminaSystem.UseStamina(powerShotStaminaCost))
+        {
+            lastAttackTime = Time.time;
+            Debug.Log("¡POWER SHOT / ESTOCADA EJECUTADA!");
+
+            // Disparar animación de ataque
+            if (anim != null)
+            {
+                anim.SetTrigger("meleeAttack");
+            }
+
+            // Aplicar el impulso de embestida directo
+            ApplyLungeImpulse();
+
+            // Realizar el ataque y daño
+            PerformAttack(powerShotDamage, powerShotRange);
+        }
+    }
+
+    private void ApplyLungeImpulse()
+    {
+        if (rb != null)
+        {
+            // Determinar dirección basada en la escala X de Elisa
+            float facingDirection = Mathf.Sign(transform.localScale.x);
+
+            // Reseteamos la velocidad X previa para que la embestida sea pura y uniforme
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+            // Aplicamos un impulso instantáneo hacia adelante
+            rb.AddForce(new Vector2(facingDirection * lungeForce, 0f), ForceMode2D.Impulse);
+        }
+    }
+
+    private void PerformAttack(float damage, float range)
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, range, enemyLayers);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            EnemyLife groundEnemy = enemy.GetComponent<EnemyLife>();
+            if (groundEnemy != null)
+            {
+                groundEnemy.TakeDamage(damage);
+                continue;
+            }
+
+            FlyingEnemyShooter flyingEnemy = enemy.GetComponent<FlyingEnemyShooter>();
+            if (flyingEnemy != null)
+            {
+                flyingEnemy.TakeDamage(damage);
+            }
+        }
+    }
+
+    private void ResetTimeScale()
+    {
+        Time.timeScale = 1.0f;
+        Time.fixedDeltaTime = 0.02f;
+    }
+
+    private void OnDisable()
+    {
+        ResetTimeScale();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(attackPoint.position, powerShotRange);
+    }
+}
