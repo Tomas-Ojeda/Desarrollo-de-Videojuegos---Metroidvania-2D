@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e9cc9d187cf229941afcdb95bce2421c
+guid: 87f200ae6f5a0814da1705a4df545401
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2695301884616899723
-    second: sprite_idle_tired_or_parpadeo_0
+      213: 259813381562483141
+    second: sprite_idle3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sprite_idle_tired_or_parpadeo_0
+      name: sprite_idle3_0
       rect:
         serializedVersion: 2
         x: 48
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 57308fc573d589ad0800000000000000
-      internalID: -2695301884616899723
+      spriteID: 5c1ccebd4ea0b9300800000000000000
+      internalID: 259813381562483141
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      sprite_idle_tired_or_parpadeo_0: -2695301884616899723
+      sprite_idle3_0: 259813381562483141
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
