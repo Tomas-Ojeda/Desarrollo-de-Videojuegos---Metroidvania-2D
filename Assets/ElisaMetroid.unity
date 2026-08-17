@@ -576,7 +576,8 @@ MonoBehaviour:
     m_Bits: 128
   attackRange: 0.5
   attackDamage: 40
-  attackCooldown: 0.4
+  attackCooldown: 0.19
+  comboResetTime: 1
   powerShotDamage: 75
   powerShotRange: 1.3
   powerShotStaminaCost: 35
@@ -598,6 +599,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   spawnPoint: {fileID: 156296461}
+  respawnDelay: 1.5
   invincibilityDuration: 1
   flashInterval: 0.1
 --- !u!114 &464305923
