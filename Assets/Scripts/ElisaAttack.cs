@@ -43,10 +43,10 @@ public class ElisaAttack : MonoBehaviour
 
     private void Update()
     {
-        // Reiniciar el combo al Golpe 1 si pasa mucho tiempo sin atacar
-        if (Time.time - lastAttackTime > comboResetTime)
+        // Reiniciar el combo al Golpe 1 si pasa mucho tiempo sin atacar y limpiar parámetros en el Animator
+        if (Time.time - lastAttackTime > comboResetTime && comboStep != 0)
         {
-            comboStep = 0;
+            ResetCombo();
         }
 
         // 1. ATAQUE NORMAL (J o Clic Izquierdo)
@@ -106,9 +106,9 @@ public class ElisaAttack : MonoBehaviour
     {
         lastAttackTime = Time.time;
 
-        // Disparar animación pasando los nuevos parámetros
         if (anim != null)
         {
+            // Seteamos explícitamente el índice del combo actual ANTES de disparar el Trigger
             anim.SetInteger("ComboIndex", comboStep);
             anim.SetTrigger("AttackMele");
         }
@@ -117,8 +117,18 @@ public class ElisaAttack : MonoBehaviour
 
         PerformAttack(attackDamage, attackRange);
 
-        // Alternar paso del combo entre 0 y 1 para el próximo ataque
+        // Avanzar el paso del combo
         comboStep = (comboStep == 0) ? 1 : 0;
+    }
+
+    private void ResetCombo()
+    {
+        comboStep = 0;
+        if (anim != null)
+        {
+            anim.SetInteger("ComboIndex", 0);
+            anim.ResetTrigger("AttackMele");
+        }
     }
 
     private void ExecutePowerShot()
@@ -128,7 +138,6 @@ public class ElisaAttack : MonoBehaviour
             lastAttackTime = Time.time;
             Debug.Log("¡POWER SHOT / ESTOCADA EJECUTADA!");
 
-            // Para la estocada podés forzar el Golpe 2 o usar el mismo Trigger
             if (anim != null)
             {
                 anim.SetInteger("ComboIndex", 1);
