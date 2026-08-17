@@ -10,7 +10,8 @@ public class ElisaAttack : MonoBehaviour
     [Header("Ataque Normal")]
     public float attackRange = 0.8f;
     public float attackDamage = 25f;
-    public float attackCooldown = 0.4f;
+    public float attackCooldown = 0.3f;
+    public float comboResetTime = 1.0f; // Tiempo para reiniciar el combo al golpe 1 si no atacas
 
     [Header("Power Shot / Estocada Cargada")]
     public float powerShotDamage = 75f;
@@ -27,6 +28,8 @@ public class ElisaAttack : MonoBehaviour
     private float lastAttackTime;
     private float chargeTimer;
     private bool isCharging;
+    private int comboStep = 0; // 0 = Golpe 1, 1 = Golpe 2
+
     private ElisaStamina staminaSystem;
     private Rigidbody2D rb;
     private Animator anim;
@@ -40,6 +43,12 @@ public class ElisaAttack : MonoBehaviour
 
     private void Update()
     {
+        // Reiniciar el combo al Golpe 1 si pasa mucho tiempo sin atacar
+        if (Time.time - lastAttackTime > comboResetTime)
+        {
+            comboStep = 0;
+        }
+
         // 1. ATAQUE NORMAL (J o Clic Izquierdo)
         if (Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))
         {
@@ -96,15 +105,20 @@ public class ElisaAttack : MonoBehaviour
     private void NormalAttack()
     {
         lastAttackTime = Time.time;
-        Debug.Log("¡Ataque Normal!");
 
-        // Disparar animación de ataque
+        // Disparar animación pasando los nuevos parámetros
         if (anim != null)
         {
-            anim.SetTrigger("meleeAttack");
+            anim.SetInteger("ComboIndex", comboStep);
+            anim.SetTrigger("AttackMele");
         }
 
+        Debug.Log($"¡Ataque Normal Golpe {comboStep + 1}!");
+
         PerformAttack(attackDamage, attackRange);
+
+        // Alternar paso del combo entre 0 y 1 para el próximo ataque
+        comboStep = (comboStep == 0) ? 1 : 0;
     }
 
     private void ExecutePowerShot()
@@ -114,10 +128,11 @@ public class ElisaAttack : MonoBehaviour
             lastAttackTime = Time.time;
             Debug.Log("¡POWER SHOT / ESTOCADA EJECUTADA!");
 
-            // Disparar animación de ataque
+            // Para la estocada podés forzar el Golpe 2 o usar el mismo Trigger
             if (anim != null)
             {
-                anim.SetTrigger("meleeAttack");
+                anim.SetInteger("ComboIndex", 1);
+                anim.SetTrigger("AttackMele");
             }
 
             // Aplicar el impulso de embestida directo
@@ -125,6 +140,9 @@ public class ElisaAttack : MonoBehaviour
 
             // Realizar el ataque y daño
             PerformAttack(powerShotDamage, powerShotRange);
+
+            // Reiniciar combo después del Power Shot
+            comboStep = 0;
         }
     }
 

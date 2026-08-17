@@ -17,6 +17,7 @@ public class CharacterController2d : MonoBehaviour
     public float groundCheckRadius = 0.2f;
 
     private Rigidbody2D rb;
+    private Animator anim;                      // Referencia al Animator
     private ElisaStamina staminaSystem;
     private float horizontalInput;
     private bool isGrounded;
@@ -26,6 +27,7 @@ public class CharacterController2d : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();        // Obtiene el componente Animator
         staminaSystem = GetComponent<ElisaStamina>();
     }
 
@@ -55,7 +57,6 @@ public class CharacterController2d : MonoBehaviour
 
         if (wantToSprint && Mathf.Abs(horizontalInput) > 0.1f && staminaSystem != null)
         {
-            // Consume stamina con el tiempo
             if (staminaSystem.UseStamina(sprintStaminaCost * Time.deltaTime))
             {
                 isSprinting = true;
@@ -72,6 +73,9 @@ public class CharacterController2d : MonoBehaviour
 
         // 5. Girar el personaje según la dirección
         CheckFlip(horizontalInput);
+
+        // 6. Actualizar variables en el Animator
+        UpdateAnimator();
     }
 
     private void FixedUpdate()
@@ -106,6 +110,20 @@ public class CharacterController2d : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    private void UpdateAnimator()
+    {
+        if (anim == null) return;
+
+        // Pasa la velocidad horizontal absoluta para Idle / Walk / Run
+        anim.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
+
+        // Pasa el estado del suelo
+        anim.SetBool("isGrounded", isGrounded);
+
+        // Pasa la velocidad vertical para alternar entre Salto y Caída
+        anim.SetFloat("velocityY", rb.linearVelocity.y);
     }
 
     private void OnDrawGizmosSelected()
