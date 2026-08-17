@@ -32,7 +32,6 @@ public class ElisaHealth : MonoBehaviour
         controller = GetComponent<CharacterController2d>();
         attackScript = GetComponent<ElisaAttack>();
 
-        // Si no asignaste un spawnPoint manualmente, usa la posición inicial de Elisa
         if (spawnPoint == null)
         {
             GameObject defaultSpawn = new GameObject("DefaultSpawnPoint");
@@ -62,7 +61,6 @@ public class ElisaHealth : MonoBehaviour
     {
         isInvincible = true;
 
-        // Efecto visual de parpadeo
         float elapsedTime = 0f;
         while (elapsedTime < invincibilityDuration)
         {
@@ -76,7 +74,7 @@ public class ElisaHealth : MonoBehaviour
 
         if (spriteRenderer != null)
         {
-            spriteRenderer.enabled = true; // Asegurar que quede visible
+            spriteRenderer.enabled = true;
         }
 
         isInvincible = false;
@@ -87,30 +85,30 @@ public class ElisaHealth : MonoBehaviour
         isDead = true;
         Debug.Log("¡Elisa ha muerto!");
 
-        // 1. Disparar el Trigger de Muerte en el Animator
+        // 1. Activar bool isDead en el Animator
         if (anim != null)
         {
-            anim.SetTrigger("Die");
+            anim.SetBool("isDead", true);
         }
 
-        // 2. Desactivar controles de movimiento y ataque
+        // 2. Desactivar controles
         if (controller != null) controller.enabled = false;
         if (attackScript != null) attackScript.enabled = false;
 
-        // 3. Frenar la física para que no siga deslizándose
+        // 3. Frenar la física
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
         }
 
-        // 4. Esperar el tiempo de reproducción de la animación de muerte
+        // 4. Esperar tiempo de animación de muerte
         yield return new WaitForSeconds(respawnDelay);
 
-        // 5. Reposicionar en el spawn point y restaurar salud
+        // 5. Reposicionar y restaurar salud
         transform.position = spawnPoint.position;
         currentHealth = maxHealth;
 
-        // 6. Volver a activar controles y visuales
+        // 6. Reactivar controles y renderizado
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
@@ -119,9 +117,10 @@ public class ElisaHealth : MonoBehaviour
         if (controller != null) controller.enabled = true;
         if (attackScript != null) attackScript.enabled = true;
 
-        // Resetear Animator a estado normal (Idle)
+        // 7. Resetear Animator
         if (anim != null)
         {
+            anim.SetBool("isDead", false);
             anim.Rebind();
             anim.Update(0f);
         }
