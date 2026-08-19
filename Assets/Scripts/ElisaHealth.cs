@@ -42,7 +42,8 @@ public class ElisaHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (isInvincible || isDead) return;
+        // Ignora el daño si ya está invencible, muerta o haciendo el Dash/Voltereta
+        if (isInvincible || isDead || (controller != null && controller.isInvulnerable)) return;
 
         currentHealth -= damage;
         Debug.Log($"¡Elisa recibió {damage} de daño! Vida restante: {currentHealth}/{maxHealth}");
