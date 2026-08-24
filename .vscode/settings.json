@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Desarrollo-de-Videojuegos---Metroidvania-2D.slnx"
+    "dotnet.defaultSolution": "ElisaGame.slnx"
 }
