@@ -19,13 +19,13 @@ public class CharacterController2d : MonoBehaviour
     public float wallCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
-    [Header("Dash")]
+    [Header("Dash (En Aire)")]
     public float dashSpeed = 16f;
     public float dashDuration = 0.2f;
     public float dashCooldown = 0.8f;
     public float dashStaminaCost = 20f;
 
-    [Header("Voltereta / Roll")]
+    [Header("Voltereta / Roll (En Piso con Movimiento)")]
     public float rollSpeed = 10f;
     public float rollDuration = 0.4f;
     public float rollCooldown = 0.6f;
@@ -75,27 +75,30 @@ public class CharacterController2d : MonoBehaviour
         // 2. Detección física
         CheckSurroundings();
 
-        // 3. Mecánica de Dash (Tecla C)
-        if (Input.GetKeyDown(KeyCode.C) && canDash)
+        // 3. Mecánica Unificada de Dash / Roll (Tecla C)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            if (staminaSystem == null || staminaSystem.UseStamina(dashStaminaCost))
+            // Solo hace Roll si está en el suelo Y moviéndose
+            if (isGrounded && canRoll && Mathf.Abs(horizontalInput) > 0.1f)
             {
-                StartCoroutine(PerformDash());
-                return;
+                if (staminaSystem == null || staminaSystem.UseStamina(rollStaminaCost))
+                {
+                    StartCoroutine(PerformRoll());
+                    return;
+                }
+            }
+            // Si está en el aire -> Hace Dash
+            else if (!isGrounded && canDash)
+            {
+                if (staminaSystem == null || staminaSystem.UseStamina(dashStaminaCost))
+                {
+                    StartCoroutine(PerformDash());
+                    return;
+                }
             }
         }
 
-        // 4. Mecánica de Roll / Voltereta (Tecla V o la que prefieras)
-        if (Input.GetKeyDown(KeyCode.V) && canRoll && isGrounded)
-        {
-            if (staminaSystem == null || staminaSystem.UseStamina(rollStaminaCost))
-            {
-                StartCoroutine(PerformRoll());
-                return;
-            }
-        }
-
-        // 5. Mecánica de Salto y Wall Jump
+        // 4. Mecánica de Salto y Wall Jump
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
             if (isGrounded)
@@ -108,7 +111,7 @@ public class CharacterController2d : MonoBehaviour
             }
         }
 
-        // 6. Lógica de Sprint
+        // 5. Lógica de Sprint
         bool wantToSprint = Input.GetKey(KeyCode.LeftShift);
         if (wantToSprint && Mathf.Abs(horizontalInput) > 0.1f && staminaSystem != null)
         {
@@ -119,10 +122,10 @@ public class CharacterController2d : MonoBehaviour
             isSprinting = false;
         }
 
-        // 7. Lógica de Wall Slide
+        // 6. Lógica de Wall Slide
         CheckWallSlide();
 
-        // 8. Volteo de personaje y actualización del Animator
+        // 7. Volteo de personaje y actualización del Animator
         if (!isWallSliding)
         {
             CheckFlip(horizontalInput);
@@ -210,7 +213,12 @@ public class CharacterController2d : MonoBehaviour
         float dashDirection = facingRight ? 1f : -1f;
         rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
 
-        if (anim != null) anim.SetTrigger("Dash");
+        if (anim != null) 
+        {
+            // Seteamos velocityY en 0 para evitar que el Animator corte la transición por velocityY < -0.1
+            anim.SetFloat("velocityY", 0f);
+            anim.SetTrigger("Dash");
+        }
 
         yield return new WaitForSeconds(dashDuration);
 
@@ -226,12 +234,15 @@ public class CharacterController2d : MonoBehaviour
     {
         canRoll = false;
         isRolling = true;
-        isInvulnerable = true; // Si querés iframe durante la voltereta
+        isInvulnerable = true;
 
         float rollDirection = facingRight ? 1f : -1f;
         rb.linearVelocity = new Vector2(rollDirection * rollSpeed, rb.linearVelocity.y);
 
-        if (anim != null) anim.SetTrigger("Roll");
+        if (anim != null && isGrounded)
+        {
+            anim.SetTrigger("Roll");
+        }
 
         yield return new WaitForSeconds(rollDuration);
 
@@ -268,7 +279,13 @@ public class CharacterController2d : MonoBehaviour
 
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
-        anim.SetFloat("velocityY", rb.linearVelocity.y);
+        
+        // Solo actualizamos velocityY si no estamos haciendo dash ni roll
+        if (!isDashing && !isRolling)
+        {
+            anim.SetFloat("velocityY", rb.linearVelocity.y);
+        }
+
         anim.SetBool("isWallSliding", isWallSliding);
     }
 
