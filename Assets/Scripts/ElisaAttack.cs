@@ -7,7 +7,7 @@ public class ElisaAttack : MonoBehaviour
     public Transform attackPoint;
     public LayerMask enemyLayers;
 
-    [Header("Ataque Normal")]
+    [Header("Ataque Normal Melee")]
     public float attackRange = 0.8f;
     public float attackDamage = 25f;
     public float attackCooldown = 0.3f;
@@ -18,6 +18,11 @@ public class ElisaAttack : MonoBehaviour
     public float powerShotRange = 1.3f;
     public float powerShotStaminaCost = 35f;
     public float maxChargeTime = 1.2f;
+
+    [Header("Ataque a Distancia (Shoot)")]
+    public KeyCode shootKey = KeyCode.L; // Tecla para disparar
+    public float shootCooldown = 0.25f;  // Cadencia de disparo
+    private float lastShootTime;
 
     [Header("Ralentización de Carga (Slow Motion)")]
     [Range(0.1f, 1f)] public float chargeTimeScale = 0.4f;
@@ -43,13 +48,13 @@ public class ElisaAttack : MonoBehaviour
 
     private void Update()
     {
-        // Reiniciar el combo al Golpe 1 si pasa mucho tiempo sin atacar y limpiar parámetros en el Animator
+        // Reiniciar el combo al Golpe 1 si pasa mucho tiempo sin atacar
         if (Time.time - lastAttackTime > comboResetTime && comboStep != 0)
         {
             ResetCombo();
         }
 
-        // 1. ATAQUE NORMAL (J o Clic Izquierdo)
+        // 1. ATAQUE NORMAL MELEE (J o Clic Izquierdo)
         if (Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))
         {
             if (Time.time - lastAttackTime > attackCooldown)
@@ -58,7 +63,16 @@ public class ElisaAttack : MonoBehaviour
             }
         }
 
-        // 2. INICIAR CARGA DE POWER SHOT (K o Clic Derecho)
+        // 2. DISPARO A DISTANCIA (Únicamente la tecla asignada en shootKey)
+        if (Input.GetKeyDown(shootKey))
+        {
+            if (Time.time - lastShootTime > shootCooldown)
+            {
+                RangedAttack();
+            }
+        }
+
+        // 3. INICIAR CARGA DE POWER SHOT (K o Clic Derecho)
         if (Input.GetKeyDown(KeyCode.K) || Input.GetMouseButtonDown(1))
         {
             if (staminaSystem != null && staminaSystem.HasStamina(powerShotStaminaCost))
@@ -74,7 +88,7 @@ public class ElisaAttack : MonoBehaviour
             }
         }
 
-        // 3. PROCESAR CARGA Y SOLTAR ATAQUE
+        // 4. PROCESAR CARGA Y SOLTAR ATAQUE
         if (isCharging)
         {
             if (Input.GetKey(KeyCode.K) || Input.GetMouseButton(1))
@@ -108,7 +122,7 @@ public class ElisaAttack : MonoBehaviour
 
         if (anim != null)
         {
-            // Seteamos explícitamente el índice del combo actual ANTES de disparar el Trigger
+            // Asignar el índice del combo actual ANTES de activar el Trigger
             anim.SetInteger("ComboIndex", comboStep);
             anim.SetTrigger("AttackMele");
         }
@@ -119,6 +133,19 @@ public class ElisaAttack : MonoBehaviour
 
         // Avanzar el paso del combo
         comboStep = (comboStep == 0) ? 1 : 0;
+    }
+
+    private void RangedAttack()
+    {
+        lastShootTime = Time.time;
+
+        if (anim != null)
+        {
+            // Activa el Trigger exacto del Animator (rangedAttack)
+            anim.SetTrigger("rangedAttack");
+        }
+
+        Debug.Log("¡Disparo Realizado!");
     }
 
     private void ResetCombo()
@@ -162,7 +189,7 @@ public class ElisaAttack : MonoBehaviour
             // Determinar dirección basada en la escala X de Elisa
             float facingDirection = Mathf.Sign(transform.localScale.x);
 
-            // Reseteamos la velocidad X previa para que la embestida sea pura y uniforme
+            // Reseteamos la velocidad X previa para que la embestida sea uniforme
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
 
             // Aplicamos un impulso instantáneo hacia adelante

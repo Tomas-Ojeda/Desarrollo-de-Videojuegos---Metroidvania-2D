@@ -577,8 +577,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.52, y: 4.22}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 3.37, y: 4.29}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -666,7 +666,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.37, y: 4.29}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -748,14 +748,14 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 768
-  dashSpeed: 16
+  dashSpeed: 12
   dashDuration: 0.2
   dashCooldown: 0.8
   dashStaminaCost: 20
-  rollSpeed: 10
-  rollDuration: 0.4
+  rollSpeed: 99
+  rollDuration: 0.3
   rollCooldown: 0.6
-  rollStaminaCost: 15
+  rollStaminaCost: 5
   wallSlideSpeed: 2
   wallJumpForce: {x: 10, y: 12}
   wallJumpDuration: 0.15
@@ -815,8 +815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b9ce7de06af0e439f6f15c74a7c8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElisaStamina
-  maxStamina: 100
-  currentStamina: 0
+  maxStamina: 999
+  currentStamina: 999
   regenRate: 15
   regenDelay: 1
 --- !u!114 &464305924

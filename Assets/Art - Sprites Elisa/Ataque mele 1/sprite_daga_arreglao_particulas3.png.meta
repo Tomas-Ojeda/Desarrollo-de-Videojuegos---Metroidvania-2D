@@ -1,10 +1,31 @@
 fileFormatVersion: 2
-guid: d33667a88b42eb046876f7fc0fb52888
+guid: fefbfdf2d1d4af444baed7a3f795755e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6470460504253458178
-    second: 3_0
+      213: 1832149284780906824
+    second: sprite_daga_arreglao_particulas3_0
+  - first:
+      213: 158377911995784508
+    second: sprite_daga_arreglao_particulas3_1
+  - first:
+      213: 8293738629713019410
+    second: sprite_daga_arreglao_particulas3_2
+  - first:
+      213: -532180582609918975
+    second: sprite_daga_arreglao_particulas3_3
+  - first:
+      213: 1853023467841629699
+    second: sprite_daga_arreglao_particulas3_4
+  - first:
+      213: -413091379370667250
+    second: sprite_daga_arreglao_particulas3_5
+  - first:
+      213: 5530206666669707629
+    second: sprite_daga_arreglao_particulas3_6
+  - first:
+      213: 3864289994027893152
+    second: sprite_daga_arreglao_particulas3_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,14 +67,14 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  alignment: 9
+  spritePivot: {x: 0.3, y: 0.3}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteBorder: {x: 0, y: 16, z: 231, w: 190}
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -75,7 +96,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +121,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 3_0
+      name: sprite_daga_arreglao_particulas3_2
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 400
-        height: 442
+        width: 747
+        height: 524
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +136,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef817ce047e4436a0800000000000000
-      internalID: -6470460504253458178
+      spriteID: 212caf37757491370800000000000000
+      internalID: 8293738629713019410
       vertices: []
       indices: 
       edges: []
@@ -125,8 +146,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3e244e9bdcc7c134abbb31d0d15db894
-    internalID: 0
+    spriteID: afa9d3f6ee3237b4e950b429d6fc8565
+    internalID: 852889063
     vertices: []
     indices: 
     edges: []
@@ -135,7 +156,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      3_0: -6470460504253458178
+      sprite_daga_arreglao_particulas3_0: 1832149284780906824
+      sprite_daga_arreglao_particulas3_1: 158377911995784508
+      sprite_daga_arreglao_particulas3_2: 8293738629713019410
+      sprite_daga_arreglao_particulas3_3: -532180582609918975
+      sprite_daga_arreglao_particulas3_4: 1853023467841629699
+      sprite_daga_arreglao_particulas3_5: -413091379370667250
+      sprite_daga_arreglao_particulas3_6: 5530206666669707629
+      sprite_daga_arreglao_particulas3_7: 3864289994027893152
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

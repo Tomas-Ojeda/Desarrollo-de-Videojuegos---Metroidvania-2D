@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d33667a88b42eb046876f7fc0fb52888
+guid: eddd59b5278d6f34d999ee7604583d85
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6470460504253458178
-    second: 3_0
+      213: -4716879066882931416
+    second: pistola_corriendo5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 3_0
+      name: pistola_corriendo5_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 400
-        height: 442
+        x: 48
+        y: 6
+        width: 373
+        height: 436
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef817ce047e4436a0800000000000000
-      internalID: -6470460504253458178
+      spriteID: 82587f1da774a8eb0800000000000000
+      internalID: -4716879066882931416
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3e244e9bdcc7c134abbb31d0d15db894
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      3_0: -6470460504253458178
+      pistola_corriendo5_0: -4716879066882931416
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
