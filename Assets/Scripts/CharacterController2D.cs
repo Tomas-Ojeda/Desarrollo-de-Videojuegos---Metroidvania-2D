@@ -11,6 +11,8 @@ public class CharacterController2d : MonoBehaviour
 
     [Header("Salto")]
     public float jumpForce = 12f;
+    [Range(0f, 1f)]
+    public float jumpCutMultiplier = 0.5f; // Cuanto menor el valor, más corto el salto al soltar rápido.
 
     [Header("Detección de Suelo y Pared")]
     public Transform groundCheck;
@@ -78,7 +80,6 @@ public class CharacterController2d : MonoBehaviour
         // 3. Mecánica Unificada de Dash / Roll (Tecla C)
         if (Input.GetKeyDown(KeyCode.C))
         {
-            // Solo hace Roll si está en el suelo Y moviéndose
             if (isGrounded && canRoll && Mathf.Abs(horizontalInput) > 0.1f)
             {
                 if (staminaSystem == null || staminaSystem.UseStamina(rollStaminaCost))
@@ -87,7 +88,6 @@ public class CharacterController2d : MonoBehaviour
                     return;
                 }
             }
-            // Si está en el aire -> Hace Dash
             else if (!isGrounded && canDash)
             {
                 if (staminaSystem == null || staminaSystem.UseStamina(dashStaminaCost))
@@ -98,7 +98,7 @@ public class CharacterController2d : MonoBehaviour
             }
         }
 
-        // 4. Mecánica de Salto y Wall Jump
+        // 4. Mecánica de Salto Variable y Wall Jump
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
             if (isGrounded)
@@ -109,6 +109,12 @@ public class CharacterController2d : MonoBehaviour
             {
                 StartCoroutine(PerformWallJump());
             }
+        }
+
+        // Control de Salto Variable (Hollow Knight Style)
+        if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W))
+        {
+            OnJumpUp();
         }
 
         // 5. Lógica de Sprint
@@ -186,6 +192,15 @@ public class CharacterController2d : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
+    private void OnJumpUp()
+    {
+        // Solo reduce el impulso si Elisa todavía está subiendo
+        if (rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+        }
+    }
+
     private IEnumerator PerformWallJump()
     {
         isWallJumping = true;
@@ -215,7 +230,6 @@ public class CharacterController2d : MonoBehaviour
 
         if (anim != null) 
         {
-            // Seteamos velocityY en 0 para evitar que el Animator corte la transición por velocityY < -0.1
             anim.SetFloat("velocityY", 0f);
             anim.SetTrigger("Dash");
         }
@@ -280,7 +294,6 @@ public class CharacterController2d : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
         
-        // Solo actualizamos velocityY si no estamos haciendo dash ni roll
         if (!isDashing && !isRolling)
         {
             anim.SetFloat("velocityY", rb.linearVelocity.y);
