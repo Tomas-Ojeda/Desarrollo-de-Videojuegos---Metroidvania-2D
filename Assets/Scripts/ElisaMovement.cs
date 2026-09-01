@@ -18,6 +18,7 @@ public class ElisaMovement : MonoBehaviour
     private Rigidbody2D rb;
     private ElisaStamina staminaSystem;
     private Animator anim;
+    private CharacterController2d controller;
 
     private float horizontalInput;
 
@@ -26,10 +27,14 @@ public class ElisaMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         staminaSystem = GetComponent<ElisaStamina>();
         anim = GetComponent<Animator>();
+        controller = GetComponent<CharacterController2d>();
     }
 
     private void Update()
     {
+        // Si el controller está ejecutando una maniobra especial (Dash, Roll, WallJump), pausamos la lógica de movimiento base
+        if (controller != null && controller.IsPerformingAction) return;
+
         // 1. Lectura de Inputs horizontales
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
@@ -44,7 +49,6 @@ public class ElisaMovement : MonoBehaviour
         
         if (isRunningInput && Mathf.Abs(horizontalInput) > 0.1f)
         {
-            // Opcional: podrías consumir stamina al correr llamando a staminaSystem.UseStamina(...)
             currentSpeed = runSpeed;
         }
         else
@@ -58,7 +62,7 @@ public class ElisaMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        // 5. Volteer el Sprite según la dirección
+        // 5. Voltear el Sprite según la dirección
         if (horizontalInput > 0)
         {
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -74,6 +78,9 @@ public class ElisaMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Si se está ejecutando Dash, Roll o WallJump, se deja que CharacterController2d maneje el Rigidbody
+        if (controller != null && controller.IsPerformingAction) return;
+
         // Aplicar movimiento horizontal en el ciclo de físicas
         rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
     }
@@ -83,21 +90,19 @@ public class ElisaMovement : MonoBehaviour
         if (anim == null) return;
 
         // Velocidad horizontal absoluta para transiciones entre Idle, Walk y Run
-        // Multiplicamos por la velocidad real para diferenciar caminar de correr
         float actualSpeed = Mathf.Abs(rb.linearVelocity.x);
         anim.SetFloat("Speed", actualSpeed);
 
         // Estado en el aire / en el suelo para el salto
         anim.SetBool("isGrounded", isGrounded);
 
-        // Agacharse (Teclas S o Flecha Abajo)
-        bool isCrouching = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+        // Agacharse (Reservado para Flecha Abajo; 'S' ahora activa el Dash)
+        bool isCrouching = Input.GetKey(KeyCode.DownArrow);
         anim.SetBool("isCrouching", isCrouching);
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Dibujar radio de detección de suelo en la ventana Scene
         if (groundCheck != null)
         {
             Gizmos.color = Color.red;

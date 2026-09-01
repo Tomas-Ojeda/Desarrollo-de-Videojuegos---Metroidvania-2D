@@ -12,7 +12,7 @@ public class CharacterController2d : MonoBehaviour
     [Header("Salto")]
     public float jumpForce = 12f;
     [Range(0f, 1f)]
-    public float jumpCutMultiplier = 0.5f; // Cuanto menor el valor, más corto el salto al soltar rápido.
+    public float jumpCutMultiplier = 0.5f;
 
     [Header("Detección de Suelo y Pared")]
     public Transform groundCheck;
@@ -21,20 +21,22 @@ public class CharacterController2d : MonoBehaviour
     public float wallCheckRadius = 0.2f;
     public LayerMask groundLayer;
 
-    [Header("Dash (En Aire)")]
-    public float dashSpeed = 16f;
+    [Header("Dash (Aire y Tierra)")]
+    public float dashSpeed = 22f;
     public float dashDuration = 0.2f;
-    public float dashCooldown = 0.8f;
+    public float dashCooldown = 0.5f;
     public float dashStaminaCost = 20f;
 
     [Header("Voltereta / Roll (En Piso con Movimiento)")]
-    public float rollSpeed = 10f;
+    public float rollSpeed = 12f;
     public float rollDuration = 0.4f;
     public float rollCooldown = 0.6f;
     public float rollStaminaCost = 15f;
 
     [Header("Estados Generales")]
     public bool isInvulnerable { get; private set; }
+
+    public bool IsPerformingAction => isDashing || isRolling || isWallJumping;
 
     [Header("Wall Slide & Wall Jump")]
     public float wallSlideSpeed = 2f;
@@ -68,8 +70,7 @@ public class CharacterController2d : MonoBehaviour
 
     private void Update()
     {
-        // Si está haciendo Dash, Roll o Wall Jump, se bloquea la captura estándar de inputs
-        if (isDashing || isRolling || isWallJumping) return;
+        if (IsPerformingAction) return;
 
         // 1. Inputs
         horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -77,8 +78,10 @@ public class CharacterController2d : MonoBehaviour
         // 2. Detección física
         CheckSurroundings();
 
-        // 3. Mecánica Unificada de Dash / Roll (Tecla C)
-        if (Input.GetKeyDown(KeyCode.C))
+        // 3. Mecánica Unificada de Dash / Roll (Teclas C o S)
+        bool dashOrRollInput = Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.S);
+
+        if (dashOrRollInput)
         {
             if (isGrounded && canRoll && Mathf.Abs(horizontalInput) > 0.1f)
             {
@@ -88,7 +91,7 @@ public class CharacterController2d : MonoBehaviour
                     return;
                 }
             }
-            else if (!isGrounded && canDash)
+            else if (canDash)
             {
                 if (staminaSystem == null || staminaSystem.UseStamina(dashStaminaCost))
                 {
@@ -111,7 +114,7 @@ public class CharacterController2d : MonoBehaviour
             }
         }
 
-        // Control de Salto Variable (Hollow Knight Style)
+        // Control de Salto Variable
         if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.W))
         {
             OnJumpUp();
@@ -142,7 +145,7 @@ public class CharacterController2d : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isDashing || isRolling || isWallJumping) return;
+        if (IsPerformingAction) return;
 
         float currentSpeed = moveSpeed * (isSprinting ? sprintSpeedMultiplier : 1f);
 
@@ -168,16 +171,16 @@ public class CharacterController2d : MonoBehaviour
 
         if (wallCheck != null)
         {
-            isWallSliding = false;
             isTouchingWall = Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, groundLayer);
         }
     }
 
     private void CheckWallSlide()
     {
+        // Se puede deslizar en pared si está en el aire, tocando la pared y cayendo (o mantenido contra ella)
         bool pushingAgainstWall = (facingRight && horizontalInput > 0) || (!facingRight && horizontalInput < 0);
         
-        if (isTouchingWall && !isGrounded && rb.linearVelocity.y < 0 && pushingAgainstWall)
+        if (isTouchingWall && !isGrounded && rb.linearVelocity.y <= 0 && pushingAgainstWall)
         {
             isWallSliding = true;
         }
@@ -194,7 +197,6 @@ public class CharacterController2d : MonoBehaviour
 
     private void OnJumpUp()
     {
-        // Solo reduce el impulso si Elisa todavía está subiendo
         if (rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
@@ -206,10 +208,12 @@ public class CharacterController2d : MonoBehaviour
         isWallJumping = true;
         isWallSliding = false;
 
+        // Salta impulsándose en la dirección opuesta hacia la que mira
         float wallJumpDirection = facingRight ? -1f : 1f;
 
+        Flip(); // Voltea el personaje para que mire en la dirección del salto
+
         rb.linearVelocity = new Vector2(wallJumpDirection * wallJumpForce.x, wallJumpForce.y);
-        Flip();
 
         yield return new WaitForSeconds(wallJumpDuration);
 
@@ -225,8 +229,7 @@ public class CharacterController2d : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
 
-        float dashDirection = facingRight ? 1f : -1f;
-        rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
+        float dashDirection = horizontalInput != 0 ? Mathf.Sign(horizontalInput) : (facingRight ? 1f : -1f);
 
         if (anim != null) 
         {
@@ -234,9 +237,16 @@ public class CharacterController2d : MonoBehaviour
             anim.SetTrigger("Dash");
         }
 
-        yield return new WaitForSeconds(dashDuration);
+        float elapsedTime = 0f;
+        while (elapsedTime < dashDuration)
+        {
+            rb.linearVelocity = new Vector2(dashDirection * dashSpeed, 0f);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
         rb.gravityScale = originalGravity;
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         isDashing = false;
         isInvulnerable = false;
 
@@ -250,15 +260,20 @@ public class CharacterController2d : MonoBehaviour
         isRolling = true;
         isInvulnerable = true;
 
-        float rollDirection = facingRight ? 1f : -1f;
-        rb.linearVelocity = new Vector2(rollDirection * rollSpeed, rb.linearVelocity.y);
+        float rollDirection = horizontalInput != 0 ? Mathf.Sign(horizontalInput) : (facingRight ? 1f : -1f);
 
         if (anim != null && isGrounded)
         {
             anim.SetTrigger("Roll");
         }
 
-        yield return new WaitForSeconds(rollDuration);
+        float elapsedTime = 0f;
+        while (elapsedTime < rollDuration)
+        {
+            rb.linearVelocity = new Vector2(rollDirection * rollSpeed, rb.linearVelocity.y);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
 
         isRolling = false;
         isInvulnerable = false;

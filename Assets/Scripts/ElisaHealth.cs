@@ -9,7 +9,7 @@ public class ElisaHealth : MonoBehaviour
 
     [Header("Punto de Reaparición")]
     public Transform spawnPoint;
-    public float respawnDelay = 1.5f; // Tiempo que dura la animación de muerte antes de reaparecer
+    public float respawnDelay = 1.5f;
 
     [Header("Invulnerabilidad (i-frames)")]
     public float invincibilityDuration = 1f;
@@ -21,6 +21,7 @@ public class ElisaHealth : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private CharacterController2d controller;
+    private ElisaMovement elisaMovement;
     private ElisaAttack attackScript;
 
     private void Start()
@@ -30,6 +31,7 @@ public class ElisaHealth : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         controller = GetComponent<CharacterController2d>();
+        elisaMovement = GetComponent<ElisaMovement>();
         attackScript = GetComponent<ElisaAttack>();
 
         if (spawnPoint == null)
@@ -42,7 +44,6 @@ public class ElisaHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        // Ignora el daño si ya está invencible, muerta o haciendo el Dash/Voltereta
         if (isInvincible || isDead || (controller != null && controller.isInvulnerable)) return;
 
         currentHealth -= damage;
@@ -86,39 +87,36 @@ public class ElisaHealth : MonoBehaviour
         isDead = true;
         Debug.Log("¡Elisa ha muerto!");
 
-        // 1. Activar bool isDead en el Animator
         if (anim != null)
         {
             anim.SetBool("isDead", true);
         }
 
-        // 2. Desactivar controles
+        // Desactivar componentes de control
         if (controller != null) controller.enabled = false;
+        if (elisaMovement != null) elisaMovement.enabled = false;
         if (attackScript != null) attackScript.enabled = false;
 
-        // 3. Frenar la física
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
         }
 
-        // 4. Esperar tiempo de animación de muerte
         yield return new WaitForSeconds(respawnDelay);
 
-        // 5. Reposicionar y restaurar salud
         transform.position = spawnPoint.position;
         currentHealth = maxHealth;
 
-        // 6. Reactivar controles y renderizado
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
         }
 
+        // Reactivar controles
         if (controller != null) controller.enabled = true;
+        if (elisaMovement != null) elisaMovement.enabled = true;
         if (attackScript != null) attackScript.enabled = true;
 
-        // 7. Resetear Animator
         if (anim != null)
         {
             anim.SetBool("isDead", false);
