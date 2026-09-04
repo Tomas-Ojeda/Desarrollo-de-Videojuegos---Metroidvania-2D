@@ -1,18 +1,18 @@
 using UnityEngine;
 
-public class KeyItem : MonoBehaviour
+public class NoteItem : MonoBehaviour
 {
-    [Header("Configuración de la Llave")]
-    public string keyID = "LlaveNivel1";
+    [Header("Configuración de la Nota")]
+    public string noteTitle = "Nota de la Hermana";
+    [TextArea(3, 6)]
+    public string noteMessage = "Elisa, si estás leyendo esto, tuve que adentrarme en las ruinas. Ten cuidado.";
     public KeyCode interactKey = KeyCode.E;
 
     [Header("Ícono para el Inventario")]
     public Sprite inventoryIcon; // Ícono pequeño para el slot del inventario
 
-    [Header("Mensaje al Recoger")]
-    [TextArea(2, 4)]
-    public string pickupMessage = "¡Encontraste la llave antigua de la caverna!";
-    public Sprite keyDialogueSprite; // Caja/Retrato para el diálogo
+    [Header("Retrato para Diálogo")]
+    public Sprite notePortrait; // Caja/Retrato para el diálogo
 
     [Header("Efecto de Titileo / Brillo")]
     public float pulseSpeed = 3f;
@@ -39,7 +39,7 @@ public class KeyItem : MonoBehaviour
 
         if (isPlayerInRange && !isCollected && Input.GetKeyDown(interactKey))
         {
-            CollectKey();
+            CollectNote();
             return;
         }
 
@@ -61,7 +61,7 @@ public class KeyItem : MonoBehaviour
         spriteRenderer.color = color;
     }
 
-    private void CollectKey()
+    private void CollectNote()
     {
         isCollected = true;
 
@@ -70,12 +70,12 @@ public class KeyItem : MonoBehaviour
 
         if (InventoryManager.Instance != null)
         {
-            InventoryManager.Instance.AddKey(keyID, iconForInventory);
+            InventoryManager.Instance.AddNote(noteTitle, noteMessage, iconForInventory);
         }
 
-        if (DialogueManager.Instance != null && !string.IsNullOrEmpty(pickupMessage))
+        if (DialogueManager.Instance != null && !string.IsNullOrEmpty(noteMessage))
         {
-            DialogueManager.Instance.ShowDialogue(pickupMessage, keyDialogueSprite);
+            DialogueManager.Instance.ShowDialogue(noteMessage, notePortrait);
         }
 
         if (spriteRenderer != null) spriteRenderer.enabled = false;

@@ -6,10 +6,19 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance { get; private set; }
 
     [Header("Referencias UI")]
-    public GameObject inventoryPanel; // Panel en el Canvas del Inventario
+    public GameObject inventoryPanel; // Panel del Inventario
+    public Transform itemsContainer;   // Contenedor UI (Grid Layout Group)
+    public GameObject slotPrefab;      // Prefab del slot guardado en Assets
 
-    // Guardado de llaves y notas recabadas
-    private HashSet<string> collectedKeys = new HashSet<string>();
+    // Estructura para guardar llaves con su sprite correspondiente
+    [System.Serializable]
+    public struct KeyData
+    {
+        public string keyID;
+        public Sprite icon;
+    }
+
+    private Dictionary<string, KeyData> collectedKeys = new Dictionary<string, KeyData>();
     private List<NoteData> collectedNotes = new List<NoteData>();
 
     [System.Serializable]
@@ -35,7 +44,6 @@ public class InventoryManager : MonoBehaviour
 
     private void Update()
     {
-        // Abrir/Cerrar inventario con la tecla G
         if (Input.GetKeyDown(KeyCode.G))
         {
             ToggleInventory();
@@ -49,24 +57,62 @@ public class InventoryManager : MonoBehaviour
             bool activeState = !inventoryPanel.activeSelf;
             inventoryPanel.SetActive(activeState);
 
-            // Opcional: Pausar el juego o congelar al jugador si el inventario está abierto
             Time.timeScale = activeState ? 0f : 1f;
+
+            if (activeState)
+            {
+                RefreshInventoryUI();
+            }
+        }
+    }
+
+    private void RefreshInventoryUI()
+    {
+        if (itemsContainer == null || slotPrefab == null) return;
+
+        // Limpiar la interfaz anterior
+        foreach (Transform child in itemsContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 1. Mostrar Llaves guardadas
+        foreach (var keyPair in collectedKeys)
+        {
+            GameObject newSlotObj = Instantiate(slotPrefab, itemsContainer);
+            InventorySlot slot = newSlotObj.GetComponent<InventorySlot>();
+            if (slot != null)
+            {
+                slot.SetupSlotAsKey(keyPair.Value.icon);
+            }
+        }
+
+        // 2. Mostrar Notas guardadas
+        foreach (NoteData note in collectedNotes)
+        {
+            GameObject newSlotObj = Instantiate(slotPrefab, itemsContainer);
+            InventorySlot slot = newSlotObj.GetComponent<InventorySlot>();
+            if (slot != null)
+            {
+                slot.SetupSlotAsNote(note);
+            }
         }
     }
 
     // --- MÉTODOS PARA LLAVES ---
-    public void AddKey(string keyID)
+    public void AddKey(string keyID, Sprite keySprite)
     {
-        if (!collectedKeys.Contains(keyID))
+        if (!collectedKeys.ContainsKey(keyID))
         {
-            collectedKeys.Add(keyID);
+            KeyData newKey = new KeyData { keyID = keyID, icon = keySprite };
+            collectedKeys.Add(keyID, newKey);
             Debug.Log($"Llave '{keyID}' agregada al inventario.");
         }
     }
 
     public bool HasKey(string keyID)
     {
-        return collectedKeys.Contains(keyID);
+        return collectedKeys.ContainsKey(keyID);
     }
 
     // --- MÉTODOS PARA NOTAS ---
