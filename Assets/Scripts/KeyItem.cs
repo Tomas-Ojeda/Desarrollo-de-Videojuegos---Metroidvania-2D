@@ -1,13 +1,15 @@
 using UnityEngine;
 
-public class InteractableItem : MonoBehaviour
+public class KeyItem : MonoBehaviour
 {
-    [Header("Configuración del Diálogo")]
-    public string noteTitle = "Carta de mi Hermana";
-    [TextArea(3, 5)]
-    public string noteMessage = "Aquí dice: 'Elisa, si estás leyendo esto...'";
-    public Sprite itemDialogueSprite;
+    [Header("Configuración de la Llave")]
+    public string keyID = "LlaveNivel1";
     public KeyCode interactKey = KeyCode.E;
+
+    [Header("Mensaje al Recoger")]
+    [TextArea(2, 4)]
+    public string pickupMessage = "¡Encontraste la llave antigua de la caverna!";
+    public Sprite keyDialogueSprite;
 
     [Header("Efecto de Titileo / Brillo")]
     public float pulseSpeed = 3f;
@@ -17,9 +19,7 @@ public class InteractableItem : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Collider2D itemCollider;
     private bool isPlayerInRange = false;
-    private bool isReading = false;
     private bool isCollected = false;
-    private bool justOpened = false;
 
     private void Start()
     {
@@ -29,27 +29,23 @@ public class InteractableItem : MonoBehaviour
 
     private void Update()
     {
-        // Animar brillo solo si no fue recogida
+        // Solo brilla si todavía no fue recogida
         if (!isCollected)
         {
             AnimateSparkle();
         }
 
-        // Para abrir: requiere estar cerca, no haber sido recogida y presionar la tecla
+        // Si está en rango y no se recogió -> Recoger al presionar E
         if (isPlayerInRange && !isCollected && Input.GetKeyDown(interactKey))
         {
-            OpenNote();
-        }
-        // Para cerrar: basta con estar leyendo, que no sea el mismo frame que se abrió y presionar la tecla
-        else if (isReading && !justOpened && Input.GetKeyDown(interactKey))
-        {
-            CloseNoteAndDestroy();
+            CollectKey();
+            return;
         }
 
-        // Reseteamos el flag en el siguiente frame
-        if (justOpened)
+        // Si ya se recogió y el jugador presiona E -> Cerrar el mensaje
+        if (isCollected && Input.GetKeyDown(interactKey))
         {
-            justOpened = false;
+            CloseDialogueAndDestroy();
         }
     }
 
@@ -65,40 +61,36 @@ public class InteractableItem : MonoBehaviour
         spriteRenderer.color = color;
     }
 
-    private void OpenNote()
+    private void CollectKey()
     {
-        isReading = true;
         isCollected = true;
-        justOpened = true; // Evita que se cierre en este mismo frame
 
-        // 1. Mostrar texto en la interfaz de diálogo
-        if (DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.ShowDialogue(noteMessage, itemDialogueSprite);
-        }
-
-        // 2. Registrar en el inventario
+        // 1. Guardar la llave en el InventoryManager
         if (InventoryManager.Instance != null)
         {
-            InventoryManager.Instance.AddNote(noteTitle, noteMessage, itemDialogueSprite);
+            InventoryManager.Instance.AddKey(keyID);
         }
 
-        // 3. Ocultar el objeto del escenario
+        // 2. Mostrar el cartel de diálogo
+        if (DialogueManager.Instance != null && !string.IsNullOrEmpty(pickupMessage))
+        {
+            DialogueManager.Instance.ShowDialogue(pickupMessage, keyDialogueSprite);
+        }
+
+        // 3. Ocultar el sprite y desactivar el collider (la llave desaparece del mapa visualmente)
         if (spriteRenderer != null) spriteRenderer.enabled = false;
         if (itemCollider != null) itemCollider.enabled = false;
     }
 
-    private void CloseNoteAndDestroy()
+    private void CloseDialogueAndDestroy()
     {
-        isReading = false;
-
-        // Ocultar caja de diálogo
+        // Ocultar el cartel
         if (DialogueManager.Instance != null)
         {
             DialogueManager.Instance.HideDialogue();
         }
 
-        // Destruir el GameObject de la escena
+        // Destruir el objeto definitivamente
         Destroy(gameObject);
     }
 
@@ -115,10 +107,6 @@ public class InteractableItem : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             isPlayerInRange = false;
-            if (isReading)
-            {
-                CloseNoteAndDestroy();
-            }
         }
     }
 }

@@ -24,7 +24,7 @@ public class DialogueManager : MonoBehaviour
         {
             Instance = this;
         }
-        else
+        else if (Instance != this)
         {
             Destroy(gameObject);
         }
@@ -32,7 +32,9 @@ public class DialogueManager : MonoBehaviour
 
     public void ShowDialogue(string message, Sprite dialogueSprite)
     {
-        // Cambiar la imagen del marco según la emoción del diálogo
+        if (dialoguePanel == null) return;
+
+        // Cambiar la imagen del marco si se proporciona un sprite
         if (dialogueSprite != null && dialogueBoxImage != null)
         {
             dialogueBoxImage.sprite = dialogueSprite;
@@ -46,7 +48,10 @@ public class DialogueManager : MonoBehaviour
             StopCoroutine(typingCoroutine);
         }
 
-        typingCoroutine = StartCoroutine(TypeText(message));
+        if (dialogueText != null)
+        {
+            typingCoroutine = StartCoroutine(TypeText(message));
+        }
     }
 
     private IEnumerator TypeText(string message)
@@ -61,8 +66,21 @@ public class DialogueManager : MonoBehaviour
 
     public void HideDialogue()
     {
-        dialoguePanel.SetActive(false);
-        dialogueText.text = "";
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+
+        if (dialogueText != null)
+        {
+            dialogueText.text = "";
+        }
+
+        if (dialoguePanel != null)
+        {
+            dialoguePanel.SetActive(false);
+        }
+
         isDialogueActive = false;
     }
 
