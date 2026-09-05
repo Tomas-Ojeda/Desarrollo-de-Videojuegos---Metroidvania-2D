@@ -664,7 +664,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 894140337}
   - {fileID: 1300545337}
   - {fileID: 596429899}
   - {fileID: 146267249}
@@ -5929,7 +5928,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 964859949506298419, guid: f19dd295122d8214497ca32f7770c755, type: 3}
   m_PrefabInstance: {fileID: 5549871178451430905}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 464305913}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 163.63, y: -65.08, z: 0}
+  m_LocalScale: {x: 0.473, y: 0.5135, z: 0.5}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1184409410}
+  - {fileID: 135389905}
+  - {fileID: 614854678}
+  - {fileID: 83674990}
+  - {fileID: 1761971275}
+  - {fileID: 317208037}
+  - {fileID: 619394802}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &464305918
+=======
 --- !u!114 &464305922 stripped
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8533300186545676721, guid: f19dd295122d8214497ca32f7770c755, type: 3}
   m_PrefabInstance: {fileID: 5549871178451430905}
@@ -6922,7 +6941,11 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_LocalPosition: {x: 163.63, y: -65.08, z: -12}
+=======
   m_LocalPosition: {x: -28.09, y: 0.47, z: -12}
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13401,11 +13424,11 @@ Transform:
   m_GameObject: {fileID: 894140336}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.72, y: -4.28, z: 0}
+  m_LocalPosition: {x: 6.03051, y: -0.8486502, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 44936470}
+  m_Father: {fileID: 1763280572}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &899496000
 GameObject:
@@ -27195,7 +27218,11 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+--- !u!1 &1563092953
+=======
 --- !u!1 &1559546909
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -27203,21 +27230,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  - component: {fileID: 1563092954}
+  - component: {fileID: 1563092958}
+  - component: {fileID: 1563092957}
+  - component: {fileID: 1563092956}
+  - component: {fileID: 1563092955}
+  m_Layer: 0
+  m_Name: MiniJefe1
+=======
   - component: {fileID: 1559546910}
   - component: {fileID: 1559546911}
   m_Layer: 0
   m_Name: BG_CavernaClara (38)
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+--- !u!4 &1563092954
+=======
 --- !u!4 &1559546910
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 1563092953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 170.9, y: -65.48, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1763280572}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1563092955
+MonoBehaviour:
+=======
   m_GameObject: {fileID: 1559546909}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
@@ -27230,10 +27284,36 @@ Transform:
 --- !u!212 &1559546911
 SpriteRenderer:
   serializedVersion: 2
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 1563092953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc1d225906bf024dbbe4d0322bd4311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JefeMasa
+  puntoA: {fileID: 0}
+  puntoB: {fileID: 0}
+  vidaMaxima: 100
+  velocidadPatrulla: 2
+  velocidadPersecucion: 4
+  "da\xF1oAtaque": 10
+  rangoDeteccion: 5
+  rangoAtaque: 1.5
+  objetivoElisa: {fileID: 0}
+  tiempoEntreAtaques: 1.5
+  tiempoAnticipacion: 0.4
+  porcentajeVidaFase2: 0.5
+  velocidadCarreraFase2: 6
+  tiempoEntreAtaquesFase2: 0.8
+--- !u!95 &1563092956
+Animator:
+  serializedVersion: 7
+=======
   m_GameObject: {fileID: 1559546909}
   m_Enabled: 1
   m_CastShadows: 0
@@ -27288,10 +27368,31 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!1 &1560854235
 GameObject:
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 1563092953}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!50 &1563092957
+Rigidbody2D:
+  serializedVersion: 5
+=======
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1560854236}
@@ -27379,10 +27480,22 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!1 &1561519422
 GameObject:
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 1563092953}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+=======
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1561519423}
@@ -27512,6 +27625,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -27519,6 +27633,13 @@ BoxCollider2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!212 &1563092958
+=======
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -27564,13 +27685,18 @@ MonoBehaviour:
   applyKnockback: 1
   knockbackForce: 6
 --- !u!212 &1562655043
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_GameObject: {fileID: 1563092953}
+=======
   m_GameObject: {fileID: 1562655039}
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -27612,8 +27738,13 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+=======
   m_Sprite: {fileID: 8836819536898190742, guid: 1a2bc71c354830b409d590a443b56768, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -28218,7 +28349,11 @@ Transform:
   m_GameObject: {fileID: 1598114688}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_LocalPosition: {x: 163.63, y: -65.08, z: -12}
+=======
   m_LocalPosition: {x: -28.09, y: 0.47, z: -12}
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30387,8 +30522,15 @@ Transform:
   m_LocalPosition: {x: 24.17077, y: -3.27656, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
+<<<<<<< HEAD:Assets/ElisaMetroid.unity
+  m_Children:
+  - {fileID: 894140337}
+  - {fileID: 1563092954}
+  m_Father: {fileID: 0}
+=======
   m_Children: []
   m_Father: {fileID: 370647301}
+>>>>>>> 751cd8ebe96e95a36083c735c144653af8da90dc:Assets/Scenes/ElisaMetroid.unity
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1766969724
 GameObject:

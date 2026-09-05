@@ -203,17 +203,13 @@ public class ElisaAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            EnemyLife groundEnemy = enemy.GetComponent<EnemyLife>();
-            if (groundEnemy != null)
-            {
-                groundEnemy.TakeDamage(damage);
-                continue;
-            }
+            // Busca el script EnemigoBase en el objeto o en los objetos padre/hijos
+            EnemigoBase enemyBase = enemy.GetComponentInParent<EnemigoBase>();
+            if (enemyBase == null) enemyBase = enemy.GetComponent<EnemigoBase>();
 
-            FlyingEnemyShooter flyingEnemy = enemy.GetComponent<FlyingEnemyShooter>();
-            if (flyingEnemy != null)
+            if (enemyBase != null)
             {
-                flyingEnemy.TakeDamage(damage);
+                enemyBase.RecibirDaño(damage);
             }
         }
     }

@@ -24,31 +24,19 @@ public class Bullet : MonoBehaviour
         // Ignorar colisión con Elisa
         if (collision.CompareTag("Player") || collision.gameObject.name == "Elisa") return;
 
-        // 1. Intentar hacer daño a Enemigo Terrestre (probando script directo o en el padre)
-        EnemyLife groundEnemy = collision.GetComponent<EnemyLife>();
-        if (groundEnemy == null) groundEnemy = collision.GetComponentInParent<EnemyLife>();
+        // 1. Intentar hacer daño a cualquier enemigo basado en EnemigoBase
+        EnemigoBase enemy = collision.GetComponent<EnemigoBase>();
+        if (enemy == null) enemy = collision.GetComponentInParent<EnemigoBase>();
 
-        if (groundEnemy != null)
+        if (enemy != null)
         {
-            groundEnemy.TakeDamage(damage);
+            enemy.RecibirDaño(damage);
             ApplySlightKnockback(collision);
             Destroy(gameObject);
             return;
         }
 
-        // 2. Intentar hacer daño a Enemigo Volador
-        FlyingEnemyShooter flyingEnemy = collision.GetComponent<FlyingEnemyShooter>();
-        if (flyingEnemy == null) flyingEnemy = collision.GetComponentInParent<FlyingEnemyShooter>();
-
-        if (flyingEnemy != null)
-        {
-            flyingEnemy.TakeDamage(damage);
-            ApplySlightKnockback(collision);
-            Destroy(gameObject);
-            return;
-        }
-
-        // 3. Destruir si toca el suelo o paredes
+        // 2. Destruir si toca el suelo o paredes
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             Destroy(gameObject);
