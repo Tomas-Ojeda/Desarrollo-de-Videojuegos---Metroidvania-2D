@@ -4,8 +4,10 @@ public class NoteItem : MonoBehaviour
 {
     [Header("Configuración de la Nota")]
     public string noteTitle = "Nota de la Hermana";
+    
     [TextArea(3, 6)]
-    public string noteMessage = "Elisa, si estás leyendo esto, tuve que adentrarme en las ruinas. Ten cuidado.";
+    public string[] notePages = new string[] { "Elisa, si estás leyendo esto, tuve que adentrarme en las ruinas. Ten cuidado." };
+    
     public KeyCode interactKey = KeyCode.E;
 
     [Header("Ícono para el Inventario")]
@@ -40,12 +42,12 @@ public class NoteItem : MonoBehaviour
         if (isPlayerInRange && !isCollected && Input.GetKeyDown(interactKey))
         {
             CollectNote();
-            return;
         }
 
-        if (isCollected && Input.GetKeyDown(interactKey))
+        // Si ya fue recolectada pero el diálogo terminó (se cerró), destruimos el objeto del mapa
+        if (isCollected && DialogueManager.Instance != null && !DialogueManager.Instance.IsActive())
         {
-            CloseDialogueAndDestroy();
+            Destroy(gameObject);
         }
     }
 
@@ -65,31 +67,25 @@ public class NoteItem : MonoBehaviour
     {
         isCollected = true;
 
-        // Determinamos el ícono del inventario: si no asignaste uno, intenta usar el SpriteRenderer del objeto
+        // Determinamos el ícono del inventario
         Sprite iconForInventory = inventoryIcon != null ? inventoryIcon : (spriteRenderer != null ? spriteRenderer.sprite : null);
 
+        // Guardamos todo el texto unificado en el inventario
         if (InventoryManager.Instance != null)
         {
-            InventoryManager.Instance.AddNote(noteTitle, noteMessage, iconForInventory);
+            string fullTextForInventory = string.Join("\n\n", notePages);
+            InventoryManager.Instance.AddNote(noteTitle, fullTextForInventory, iconForInventory);
         }
 
-        if (DialogueManager.Instance != null && !string.IsNullOrEmpty(noteMessage))
+        // Le mandamos las páginas al DialogueManager
+        if (DialogueManager.Instance != null && notePages != null && notePages.Length > 0)
         {
-            DialogueManager.Instance.ShowDialogue(noteMessage, notePortrait);
+            DialogueManager.Instance.ShowDialoguePages(notePages, notePortrait);
         }
 
+        // Desactivamos el gráfico y el collider del mapa para que no rompa las interacciones
         if (spriteRenderer != null) spriteRenderer.enabled = false;
         if (itemCollider != null) itemCollider.enabled = false;
-    }
-
-    private void CloseDialogueAndDestroy()
-    {
-        if (DialogueManager.Instance != null)
-        {
-            DialogueManager.Instance.HideDialogue();
-        }
-
-        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
