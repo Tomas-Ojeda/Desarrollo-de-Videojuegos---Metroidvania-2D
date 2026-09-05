@@ -11624,6 +11624,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Elisa
       objectReference: {fileID: 0}
+    - target: {fileID: 4841194004531665037, guid: f19dd295122d8214497ca32f7770c755, type: 3}
+      propertyPath: attackCooldown
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4841194004531665037, guid: f19dd295122d8214497ca32f7770c755, type: 3}
+      propertyPath: comboResetTime
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

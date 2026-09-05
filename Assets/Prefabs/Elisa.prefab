@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 964859949506298419}
   - component: {fileID: 6907847278884956144}
   - component: {fileID: 2854857366444225020}
+  - component: {fileID: 8218691409430410784}
   - component: {fileID: 1795290884208999110}
   - component: {fileID: 5323544574945165316}
   - component: {fileID: 3354914803103765024}
@@ -244,6 +245,7 @@ GameObject:
   - component: {fileID: 6107252072885478210}
   - component: {fileID: 187419317389748459}
   - component: {fileID: 1412936507007148550}
+  - component: {fileID: 2263296609891681521}
   m_Layer: 3
   m_Name: Elisa
   m_TagString: Player
@@ -259,7 +261,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4088827999482314269}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.39, y: 0.33, z: 0}
   m_LocalScale: {x: 0.473, y: 0.5135, z: 0.5}
   m_ConstrainProportionsScale: 0
@@ -359,6 +361,103 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!82 &8218691409430410784
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088827999482314269}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!61 &1795290884208999110
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -479,15 +578,9 @@ MonoBehaviour:
   attackRange: 0.8
   attackDamage: 20
   attackCooldown: 0.1
-  comboResetTime: 1
-  powerShotDamage: 75
-  powerShotRange: 1.3
-  powerShotStaminaCost: 35
-  maxChargeTime: 1.2
+  comboResetTime: 0.01
   shootKey: 108
   shootCooldown: 0.25
-  chargeTimeScale: 0.4
-  lungeForce: 22
 --- !u!114 &8533300186545676721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,6 +656,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2263296609891681521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088827999482314269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10585ea4708dbe14fbe5fe1d033ff6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAudio
+  audioSource: {fileID: 8218691409430410784}
+  movementAudioSource: {fileID: 0}
+  sfxMelee: {fileID: 8300000, guid: 49bdac9b9b46a0d4b9509bac99329e90, type: 3}
+  sfxDisparo: {fileID: 8300000, guid: bdf08a677f296ce4a853f556ecf41d49, type: 3}
+  sfxCaminar: {fileID: 8300000, guid: 29ff420022580664fbd58a5bb5cbbea1, type: 3}
+  sfxCorrer: {fileID: 8300000, guid: 40e2d5743c63d934d840398dc316f81a, type: 3}
 --- !u!1 &6881521843263825252
 GameObject:
   m_ObjectHideFlags: 0

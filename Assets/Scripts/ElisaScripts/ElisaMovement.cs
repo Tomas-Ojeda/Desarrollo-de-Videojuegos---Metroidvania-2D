@@ -33,7 +33,12 @@ public class ElisaMovement : MonoBehaviour
     private void Update()
     {
         // Si el controller está ejecutando una maniobra especial (Dash, Roll, WallJump), pausamos la lógica de movimiento base
-        if (controller != null && controller.IsPerformingAction) return;
+        if (controller != null && controller.IsPerformingAction)
+        {
+            // Cortar sonido de pasos si entra en maniobra especial
+            if (PlayerAudio.Instance != null) PlayerAudio.Instance.StopPasos();
+            return;
+        }
 
         // 1. Lectura de Inputs horizontales
         horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -56,13 +61,16 @@ public class ElisaMovement : MonoBehaviour
             currentSpeed = walkSpeed;
         }
 
-        // 4. Salto (Espacio o W)
+        // 4. Lógica de Audio para Pasos (Corta inmediatamente al soltar teclas o estar en el aire)
+        HandleStepSounds(isRunningInput);
+
+        // 5. Salto (Espacio o W)
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        // 5. Voltear el Sprite según la dirección
+        // 6. Voltear el Sprite según la dirección
         if (horizontalInput > 0)
         {
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -72,7 +80,7 @@ public class ElisaMovement : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
-        // 6. ACTUALIZACIÓN DEL ANIMATOR CONTROLLER
+        // 7. ACTUALIZACIÓN DEL ANIMATOR CONTROLLER
         UpdateAnimatorParameters();
     }
 
@@ -83,6 +91,17 @@ public class ElisaMovement : MonoBehaviour
 
         // Aplicar movimiento horizontal en el ciclo de físicas
         rb.linearVelocity = new Vector2(horizontalInput * currentSpeed, rb.linearVelocity.y);
+    }
+
+    private void HandleStepSounds(bool isRunning)
+    {
+        // Verificamos si está tocando el piso y si el jugador tiene presionada la tecla de dirección
+        bool isMoving = isGrounded && Mathf.Abs(horizontalInput) > 0.1f;
+
+        if (PlayerAudio.Instance != null)
+        {
+            PlayerAudio.Instance.UpdatePasos(isMoving, isRunning);
+        }
     }
 
     private void UpdateAnimatorParameters()
@@ -99,6 +118,15 @@ public class ElisaMovement : MonoBehaviour
         // Agacharse (Reservado para Flecha Abajo; 'S' ahora activa el Dash)
         bool isCrouching = Input.GetKey(KeyCode.DownArrow);
         anim.SetBool("isCrouching", isCrouching);
+    }
+
+    private void OnDisable()
+    {
+        // Detiene el sonido si el script o el objeto se desactiva
+        if (PlayerAudio.Instance != null)
+        {
+            PlayerAudio.Instance.StopPasos();
+        }
     }
 
     private void OnDrawGizmosSelected()

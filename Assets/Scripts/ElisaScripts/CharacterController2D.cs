@@ -78,8 +78,8 @@ public class CharacterController2d : MonoBehaviour
         // 2. Detección física
         CheckSurroundings();
 
-        // 3. Mecánica Unificada de Dash / Roll (Teclas C o S)
-        bool dashOrRollInput = Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.S);
+        // 3. Mecánica de Dash / Roll (SOLO Tecla C)
+        bool dashOrRollInput = Input.GetKeyDown(KeyCode.C);
 
         if (dashOrRollInput)
         {
@@ -177,7 +177,6 @@ public class CharacterController2d : MonoBehaviour
 
     private void CheckWallSlide()
     {
-        // Se puede deslizar en pared si está en el aire, tocando la pared y cayendo (o mantenido contra ella)
         bool pushingAgainstWall = (facingRight && horizontalInput > 0) || (!facingRight && horizontalInput < 0);
         
         if (isTouchingWall && !isGrounded && rb.linearVelocity.y <= 0 && pushingAgainstWall)
@@ -208,10 +207,9 @@ public class CharacterController2d : MonoBehaviour
         isWallJumping = true;
         isWallSliding = false;
 
-        // Salta impulsándose en la dirección opuesta hacia la que mira
         float wallJumpDirection = facingRight ? -1f : 1f;
 
-        Flip(); // Voltea el personaje para que mire en la dirección del salto
+        Flip();
 
         rb.linearVelocity = new Vector2(wallJumpDirection * wallJumpForce.x, wallJumpForce.y);
 
