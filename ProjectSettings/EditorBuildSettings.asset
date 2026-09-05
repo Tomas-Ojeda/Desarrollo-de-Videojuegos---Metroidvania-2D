@@ -6,10 +6,13 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MainMenu.unity
+    path: Assets/Scenes/MainMenu.unity
     guid: 103be4d7070a6e74b96ab16050eb1cd1
   - enabled: 1
-    path: Assets/ElisaMetroid.unity
+    path: Assets/Scenes/Nivel_Onboaring.unity
+    guid: cf9b3f4e35b47fc43919b628defd7cbf
+  - enabled: 1
+    path: Assets/Scenes/ElisaMetroid.unity
     guid: c1a86b4b226f65a4d93bb162ac7af24e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
