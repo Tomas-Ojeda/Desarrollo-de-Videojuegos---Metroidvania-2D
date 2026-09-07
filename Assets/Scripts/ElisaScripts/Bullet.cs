@@ -24,13 +24,13 @@ public class Bullet : MonoBehaviour
         // Ignorar colisión con Elisa
         if (collision.CompareTag("Player") || collision.gameObject.name == "Elisa") return;
 
-        // 1. Intentar hacer daño a cualquier enemigo basado en EnemigoBase
-        EnemigoBase enemy = collision.GetComponent<EnemigoBase>();
-        if (enemy == null) enemy = collision.GetComponentInParent<EnemigoBase>();
+        // 1. Buscar la interfaz IDamageable en el objeto o sus padres
+        IDamageable damageable = collision.GetComponent<IDamageable>();
+        if (damageable == null) damageable = collision.GetComponentInParent<IDamageable>();
 
-        if (enemy != null)
+        if (damageable != null)
         {
-            enemy.RecibirDaño(damage);
+            damageable.TakeDamage(damage);
             ApplySlightKnockback(collision);
             Destroy(gameObject);
             return;
@@ -46,6 +46,8 @@ public class Bullet : MonoBehaviour
     private void ApplySlightKnockback(Collider2D enemyCollider)
     {
         Rigidbody2D enemyRb = enemyCollider.GetComponent<Rigidbody2D>();
+        if (enemyRb == null) enemyRb = enemyCollider.GetComponentInParent<Rigidbody2D>();
+
         if (enemyRb != null)
         {
             // Determinar la dirección de la bala

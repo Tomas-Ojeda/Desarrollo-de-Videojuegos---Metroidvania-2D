@@ -124,12 +124,12 @@ public class ElisaAttack : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            EnemigoBase enemyBase = enemy.GetComponentInParent<EnemigoBase>();
-            if (enemyBase == null) enemyBase = enemy.GetComponent<EnemigoBase>();
+            IDamageable damageable = enemy.GetComponentInParent<IDamageable>();
+            if (damageable == null) damageable = enemy.GetComponent<IDamageable>();
 
-            if (enemyBase != null)
+            if (damageable != null)
             {
-                enemyBase.RecibirDaño(damage);
+                damageable.TakeDamage(damage);
             }
         }
     }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class EnemyLife : MonoBehaviour
+public class EnemyLife : MonoBehaviour, IDamageable
 {
     public enum AIState
     {
@@ -49,6 +49,7 @@ public class EnemyLife : MonoBehaviour
     private float jumpTimer;
     private Transform player;
     private Rigidbody2D rb;
+    private Animator anim;
     private bool isDead;
     private bool facingRight = true;
     private bool isGrounded;
@@ -56,6 +57,7 @@ public class EnemyLife : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
 
         GameObject playerObj = GameObject.Find("Elisa");
         if (playerObj != null)
@@ -98,8 +100,24 @@ public class EnemyLife : MonoBehaviour
                 AttackBehavior();
                 break;
             case AIState.Idle:
+                IdleBehavior();
                 break;
         }
+
+        UpdateAnimator();
+    }
+
+    private void UpdateAnimator()
+    {
+        if (anim == null) return;
+
+        // Evaluamos si el enemigo se está moviendo horizontalmente
+        float horizontalSpeed = Mathf.Abs(rb.linearVelocity.x);
+        bool isMoving = horizontalSpeed > 0.1f;
+
+        // Actualizamos los parámetros exactamente con los nombres de tu Animator
+        anim.SetBool("isMoving", isMoving);
+        anim.SetBool("isRunnig", currentState == AIState.Chasing && isMoving);
     }
 
     private void HandleStateTransitions(float distanceToPlayer)
@@ -118,11 +136,20 @@ public class EnemyLife : MonoBehaviour
         }
     }
 
+    private void IdleBehavior()
+    {
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+    }
+
     private void PatrolBehavior()
     {
         jumpTimer = 0f; // Reinicia intención de salto si patrulla
 
-        if (patrolPoints == null || patrolPoints.Length == 0) return;
+        if (patrolPoints == null || patrolPoints.Length == 0)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
 
         Transform targetPoint = patrolPoints[currentPatrolIndex];
         float direction = targetPoint.position.x - transform.position.x;
@@ -170,28 +197,35 @@ public class EnemyLife : MonoBehaviour
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
     }
 
-  private void AttackBehavior()
-{
-    rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-
-    float directionX = player.position.x - transform.position.x;
-    CheckFlip(directionX);
-
-    if (Time.time - lastAttackTime > attackCooldown)
+    private void AttackBehavior()
     {
-        // Infligir daño a Elisa si tiene el componente de salud
-        if (player != null)
-        {
-            ElisaHealth playerHealth = player.GetComponent<ElisaHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(attackDamage);
-            }
-        }
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
-        lastAttackTime = Time.time;
+        float directionX = player.position.x - transform.position.x;
+        CheckFlip(directionX);
+
+        if (Time.time - lastAttackTime > attackCooldown)
+        {
+            // Trigger del Animator
+            if (anim != null)
+            {
+                anim.SetTrigger("Attack");
+            }
+
+            // Infligir daño a Elisa
+            if (player != null)
+            {
+                ElisaHealth playerHealth = player.GetComponent<ElisaHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(attackDamage);
+                }
+            }
+
+            lastAttackTime = Time.time;
+        }
     }
-}
+
     public void TakeDamage(float damage)
     {
         if (isDead) return;
@@ -208,8 +242,21 @@ public class EnemyLife : MonoBehaviour
     private void DieBehavior()
     {
         isDead = true;
+
+        if (anim != null)
+        {
+            anim.SetTrigger("Die");
+        }
+
+        // Desactivar el Collider para que Elisa pueda atravesarlo tras morir
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.simulated = false;
+
         Debug.Log("¡Enemigo derrotado!");
-        Destroy(gameObject);
+        Destroy(gameObject, 2f);
     }
 
     private void CheckFlip(float moveDirection)
